@@ -69,6 +69,7 @@ $string['generatevalue'] = 'Generate a new value between';
 $string['getnextnow'] = 'Get new \'Item to Add\' now';
 $string['hexanotallowed'] = 'Dataset <strong>{$a->name}</strong> hexadecimal format value {$a->value} is not allowed';
 $string['illegalformulasyntax'] = 'Illegal formula syntax starting with \'{$a}\'';
+$string['invalidformulasyntax'] = 'Invalid formula syntax: \'{$a}\'';
 $string['incorrectfeedback'] = 'For any incorrect response';
 $string['item(s)'] = 'item(s)';
 $string['itemno'] = 'Item {$a}';
