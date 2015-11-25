@@ -124,11 +124,10 @@ class grade_report_grader extends grade_report {
             $nooutcomes = get_user_preferences('grade_report_shownooutcomes');
         }
 
-        // if user report preference set or site report setting set use it, otherwise use course or site setting
-        $switch = $this->get_pref('aggregationposition');
-        if ($switch == '') {
-            $switch = grade_get_setting($this->courseid, 'aggregationposition', $CFG->grade_aggregationposition);
-        }
+        // Use the most specific aggregation position setting available.
+        $siteagg = $this->get_pref('aggregationposition');
+        $courseagg = grade_get_setting($this->courseid, 'aggregationposition', $siteagg);
+        $switch = get_user_preferences('grade_report_aggregationposition', $courseagg);
 
         // Grab the grade_tree for this course
         $this->gtree = new grade_tree($this->courseid, true, $switch, $this->collapsed, $nooutcomes);
