@@ -1899,13 +1899,16 @@ function qtype_calculated_calculate_answer($formula, $individualdata,
     return $calculated;
 }
 
-
 /**
- * Validate a forumula.
+ * Validate a formula. Once the formula has passed all of the error checks,
+ * eval the formula string to confirm that it is a valid expression.
+ *
  * @param string $formula the formula to validate.
+ * @param boolean $eval   Determine whether to test the formula expression using eval.
  * @return string|boolean false if there are no problems. Otherwise a string error message.
  */
-function qtype_calculated_find_formula_errors($formula) {
+function qtype_calculated_find_formula_errors($formula, $eval=true) {
+    $origformula = $formula;
     // Validates the formula submitted from the question edit page.
     // Returns false if everything is alright
     // otherwise it constructs an error message.
@@ -1913,6 +1916,7 @@ function qtype_calculated_find_formula_errors($formula) {
     while (preg_match('~\\{[[:alpha:]][^>} <{"\']*\\}~', $formula, $regs)) {
         $formula = str_replace($regs[0], '1', $formula);
     }
+    $subformula = $formula;
 
     // Strip away empty space and lowercase it.
     $formula = strtolower(str_replace(' ', '', $formula));
@@ -1989,10 +1993,13 @@ function qtype_calculated_find_formula_errors($formula) {
 
     if (preg_match("~[^{$safeoperatorchar}.0-9eE]+~", $formula, $regs)) {
         return get_string('illegalformulasyntax', 'qtype_calculated', $regs[0]);
-    } else {
-        // Formula just might be valid.
-        return false;
     }
+    // Finally, confirm that the formula is a valid expression.
+    if ($eval && !@eval('return true; $result = ' . $subformula . ';')) {
+        return get_string('invalidformulasyntax', 'qtype_calculated', $origformula);
+    }
+    // Formula just might be valid.
+    return false;
 }
 
 /**
